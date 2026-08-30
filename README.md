@@ -2,18 +2,6 @@
 
 Un reproductor de música moderno y funcional desarrollado en C++ para Linux, con interfaz gráfica GTK+ y soporte para audio ALSA.
 
-## 📋 Tabla de Contenidos
-
-- [Características](#características)
-- [Requisitos](#requisitos)
-- [Instalación](#instalación)
-- [Uso](#uso)
-- [Estructura del Proyecto](#estructura-del-proyecto)
-- [Arquitectura](#arquitectura)
-- [API Doxygen](#api-doxygen)
-- [Contribuciones](#contribuciones)
-- [Licencia](#licencia)
-
 ---
 
 ## ✨ Características
