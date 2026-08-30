@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Localization>
+    <!-- Español -->
+    <Language name="es">
+        <Text key="app_title">DJ Steker Music Player V1 - GTK4 Puro</Text>
+        <Text key="now_playing">Reproduciendo: </Text>
+        <Text key="paused">Pausado.</Text>
+        <Text key="stopped">Detenido.</Text>
+        <Text key="playlist_removed">Lista eliminada.</Text>
+        <Text key="song_removed">Canción eliminada de la lista.</Text>
+        <Text key="select_song_first">Selecciona una canción primero.</Text>
+        <Text key="end_of_list">Fin de la lista.</Text>
+        <Text key="add_playlist_title">Nueva Lista</Text>
+        <Text key="playlist_name_label">Nombre de la lista:</Text>
+        <Text key="cancel_button">Cancelar</Text>
+        <Text key="create_button">Crear</Text>
+        <Text key="load_files_button">Cargar Archivos</Text>
+        <Text key="load_folder_button">Cargar Carpeta</Text>
+        <Text key="remove_song_button">Eliminar Canción</Text>
+        <Text key="play_button">▶ Play</Text>
+        <Text key="pause_button">⏸ Pause</Text>
+        <Text key="stop_button">⏹ Stop</Text>
+        <Text key="rating_label">Puntuación:</Text>
+        <Text key="device_label">Salida:</Text>
+        <Text key="no_songs_loaded">Sin canciones cargadas</Text>
+        <Text key="songs_added">Añadidas %d canciones.</Text>
+    </Language>
+
+    <!-- English -->
+    <Language name="en">
+        <Text key="app_title">DJ Steker Music Player V1 - Pure GTK4</Text>
+        <Text key="now_playing">Now Playing: </Text>
+        <Text key="paused">Paused.</Text>
+        <Text key="stopped">Stopped.</Text>
+        <Text key="playlist_removed">Playlist removed.</Text>
+        <Text key="song_removed">Song removed from playlist.</Text>
+        <Text key="select_song_first">Select a song first.</Text>
+        <Text key="end_of_list">End of playlist.</Text>
+        <Text key="add_playlist_title">New Playlist</Text>
+        <Text key="playlist_name_label">Playlist Name:</Text>
+        <Text key="cancel_button">Cancel</Text>
+        <Text key="create_button">Create</Text>
+        <Text key="load_files_button">Load Files</Text>
+        <Text key="load_folder_button">Load Folder</Text>
+        <Text key="remove_song_button">Remove Song</Text>
+        <Text key="play_button">▶ Play</Text>
+        <Text key="pause_button">⏸ Pause</Text>
+        <Text key="stop_button">⏹ Stop</Text>
+        <Text key="rating_label">Rating:</Text>
+        <Text key="device_label">Output:</Text>
+        <Text key="no_songs_loaded">No songs loaded</Text>
+        <Text key="songs_added">Added %d songs.</Text>
+    </Language>
+
+    <!-- Français -->
+    <Language name="fr">
+        <Text key="app_title">DJ Steker Music Player V1 - GTK4 Pur</Text>
+        <Text key="now_playing">Lecture : </Text>
+        <Text key="paused">En pause.</Text>
+        <Text key="stopped">Arrêté.</Text>
+        <Text key="playlist_removed">Liste supprimée.</Text>
+        <Text key="song_removed">Chanson retirée de la liste.</Text>
+        <Text key="select_song_first">Sélectionnez d'abord une chanson.</Text>
+        <Text key="end_of_list">Fin de la liste.</Text>
+        <Text key="add_playlist_title">Nouvelle Liste</Text>
+        <Text key="playlist_name_label">Nom de la liste :</Text>
+        <Text key="cancel_button">Annuler</Text>
+        <Text key="create_button">Créer</Text>
+        <Text key="load_files_button">Charger Fichiers</Text>
+        <Text key="load_folder_button">Charger Dossier</Text>
+        <Text key="remove_song_button">Retirer Chanson</Text>
+        <Text key="play_button">▶ Lecture</Text>
+        <Text key="pause_button">⏸ Pause</Text>
+        <Text key="stop_button">⏹ Stop</Text>
+        <Text key="rating_label">Note :</Text>
+        <Text key="device_label">Sortie :</Text>
+        <Text key="no_songs_loaded">Aucune chanson chargée</Text>
+        <Text key="songs_added">%d chansons ajoutées.</Text>
+    </Language>
+
+    <!-- Deutsch -->
+    <Language name="de">
+        <Text key="app_title">DJ Steker Musikspieler V1 - Reines GTK4</Text>
+        <Text key="now_playing">Wiedergabe: </Text>
+        <Text key="paused">Pausiert.</Text>
+        <Text key="stopped">Gestoppt.</Text>
+        <Text key="playlist_removed">Liste gelöscht.</Text>
+        <Text key="song_removed">Song aus Liste entfernt.</Text>
+        <Text key="select_song_first">Bitte zuerst einen Song auswählen.</Text>
+        <Text key="end_of_list">Ende der Liste.</Text>
+        <Text key="add_playlist_title">Neue Liste</Text>
+        <Text key="playlist_name_label">Listenname:</Text>
+        <Text key="cancel_button">Abbrechen</Text>
+        <Text key="create_button">Erstellen</Text>
+        <Text key="load_files_button">Dateien Laden</Text>
+        <Text key="load_folder_button">Ordner Laden</Text>
+        <Text key="remove_song_button">Song Entfernen</Text>
+        <Text key="play_button">▶ Abspielen</Text>
+        <Text key="pause_button">⏸ Pause</Text>
+        <Text key="stop_button">⏹ Stop</Text>
+        <Text key="rating_label">Bewertung:</Text>
+        <Text key="device_label">Ausgabe:</Text>
+        <Text key="no_songs_loaded">Keine Songs geladen</Text>
+        <Text key="songs_added">%d Songs hinzugefügt.</Text>
+    </Language>
+
+    <!-- Italiano -->
+    <Language name="it">
+        <Text key="app_title">DJ Steker Music Player V1 - GTK4 Puro</Text>
+        <Text key="now_playing">In riproduzione: </Text>
+        <Text key="paused">In pausa.</Text>
+        <Text key="stopped">Arrestato.</Text>
+        <Text key="playlist_removed">Lista rimossa.</Text>
+        <Text key="song_removed">Canzone rimossa dalla lista.</Text>
+        <Text key="select_song_first">Seleziona prima una canzone.</Text>
+        <Text key="end_of_list">Fine della lista.</Text>
+        <Text key="add_playlist_title">Nuova Lista</Text>
+        <Text key="playlist_name_label">Nome lista:</Text>
+        <Text key="cancel_button">Annulla</Text>
+        <Text key="create_button">Crea</Text>
+        <Text key="load_files_button">Carica File</Text>
+        <Text key="load_folder_button">Carica Cartella</Text>
+        <Text key="remove_song_button">Rimuovi Canzone</Text>
+        <Text key="play_button">▶ Riproduci</Text>
+        <Text key="pause_button">⏸ Pausa</Text>
+        <Text key="stop_button">⏹ Stop</Text>
+        <Text key="rating_label">Valutazione:</Text>
+        <Text key="device_label">Uscita:</Text>
+        <Text key="no_songs_loaded">Nessuna canzone caricata</Text>
+        <Text key="songs_added">%d canzoni aggiunte.</Text>
+    </Language>
+
+    <!-- Português (Portugal/Brasil) -->
+    <Language name="pt">
+        <Text key="app_title">DJ Steker Music Player V1 - GTK4 Puro</Text>
+        <Text key="now_playing">A reproduzir: </Text>
+        <Text key="paused">Em pausa.</Text>
+        <Text key="stopped">Parado.</Text>
+        <Text key="playlist_removed">Lista removida.</Text>
+        <Text key="song_removed">Canção removida da lista.</Text>
+        <Text key="select_song_first">Selecione primeiro uma canção.</Text>
+        <Text key="end_of_list">Fim da lista.</Text>
+        <Text key="add_playlist_title">Nova Lista</Text>
+        <Text key="playlist_name_label">Nome da lista:</Text>
+        <Text key="cancel_button">Cancelar</Text>
+        <Text key="create_button">Criar</Text>
+        <Text key="load_files_button">Carregar Ficheiros</Text>
+        <Text key="load_folder_button">Carregar Pasta</Text>
+        <Text key="remove_song_button">Remover Canção</Text>
+        <Text key="play_button">▶ Reproduzir</Text>
+        <Text key="pause_button">⏸ Pausar</Text>
+        <Text key="stop_button">⏹ Parar</Text>
+        <Text key="rating_label">Classificação:</Text>
+        <Text key="device_label">Saída:</Text>
+        <Text key="no_songs_loaded">Sem canções carregadas</Text>
+        <Text key="songs_added">%d canções adicionadas.</Text>
+    </Language>
+
+    <!-- Русский -->
+    <Language name="ru">
+        <Text key="app_title">DJ Steker Music Player V1 - Чистый GTK4</Text>
+        <Text key="now_playing">Воспроизведение: </Text>
+        <Text key="paused">Пауза.</Text>
+        <Text key="stopped">Остановлено.</Text>
+        <Text key="playlist_removed">Список удалён.</Text>
+        <Text key="song_removed">Песня удалена из списка.</Text>
+        <Text key="select_song_first">Сначала выберите песню.</Text>
+        <Text key="end_of_list">Конец списка.</Text>
+        <Text key="add_playlist_title">Новый список</Text>
+        <Text key="playlist_name_label">Название списка:</Text>
+        <Text key="cancel_button">Отмена</Text>
+        <Text key="create_button">Создать</Text>
+        <Text key="load_files_button">Загрузить файлы</Text>
+        <Text key="load_folder_button">Загрузить папку</Text>
+        <Text key="remove_song_button">Удалить песню</Text>
+        <Text key="play_button">▶ Воспр.</Text>
+        <Text key="pause_button">⏸ Пауза</Text>
+        <Text key="stop_button">⏹ Стоп</Text>
+        <Text key="rating_label">Рейтинг:</Text>
+        <Text key="device_label">Выход:</Text>
+        <Text key="no_songs_loaded">Нет загруженных песен</Text>
+        <Text key="songs_added">Добавлено %d песен.</Text>
+    </Language>
+
+    <!-- 简体中文 (Chinese Simplified) -->
+    <Language name="zh_CN">
+        <Text key="app_title">DJ Steker Music Player V1 - 纯 GTK4</Text>
+        <Text key="now_playing">正在播放： </Text>
+        <Text key="paused">已暂停。</Text>
+        <Text key="stopped">已停止。</Text>
+        <Text key="playlist_removed">列表已删除。</Text>
+        <Text key="song_removed">歌曲已从列表中移除。</Text>
+        <Text key="select_song_first">请先选择一首歌曲。</Text>
+        <Text key="end_of_list">列表结束。</Text>
+        <Text key="add_playlist_title">新建列表</Text>
+        <Text key="playlist_name_label">列表名称：</Text>
+        <Text key="cancel_button">取消</Text>
+        <Text key="create_button">创建</Text>
+        <Text key="load_files_button">加载文件</Text>
+        <Text key="load_folder_button">加载文件夹</Text>
+        <Text key="remove_song_button">移除歌曲</Text>
+        <Text key="play_button">▶ 播放</Text>
+        <Text key="pause_button">⏸ 暂停</Text>
+        <Text key="stop_button">⏹ 停止</Text>
+        <Text key="rating_label">评分：</Text>
+        <Text key="device_label">输出：</Text>
+        <Text key="no_songs_loaded">未加载歌曲</Text>
+        <Text key="songs_added">已添加 %d 首歌曲。</Text>
+    </Language>
+
+    <!-- 日本語 (Japanese) -->
+    <Language name="ja">
+        <Text key="app_title">DJ Steker Music Player V1 - GTK4 クリーン</Text>
+        <Text key="now_playing">再生中： </Text>
+        <Text key="paused">一時停止。</Text>
+        <Text key="stopped">停止中。</Text>
+        <Text key="playlist_removed">リストを削除しました。</Text>
+        <Text key="song_removed">曲をリストから削除しました。</Text>
+        <Text key="select_song_first">最初に曲を選択してください。</Text>
+        <Text key="end_of_list">リストの終わり。</Text>
+        <Text key="add_playlist_title">新しいリスト</Text>
+        <Text key="playlist_name_label">リスト名：</Text>
+        <Text key="cancel_button">キャンセル</Text>
+        <Text key="create_button">作成</Text>
+        <Text key="load_files_button">ファイルを読み込み</Text>
+        <Text key="load_folder_button">フォルダを読み込み</Text>
+        <Text key="remove_song_button">曲を削除</Text>
+        <Text key="play_button">▶ 再生</Text>
+        <Text key="pause_button">⏸ 一時停止</Text>
+        <Text key="stop_button">⏹ 停止</Text>
+        <Text key="rating_label">評価：</Text>
+        <Text key="device_label">出力：</Text>
+        <Text key="no_songs_loaded">読み込んだ曲なし</Text>
+        <Text key="songs_added">%d 曲を追加しました。</Text>
+    </Language>
+
+    <!-- Nederlands -->
+    <Language name="nl">
+        <Text key="app_title">DJ Steker Music Player V1 - Zuiver GTK4</Text>
+        <Text key="now_playing">Afspelen: </Text>
+        <Text key="paused">Gepauseerd.</Text>
+        <Text key="stopped">Gestopt.</Text>
+        <Text key="playlist_removed">Lijst verwijderd.</Text>
+        <Text key="song_removed">Nummer uit lijst verwijderd.</Text>
+        <Text key="select_song_first">Selecteer eerst een nummer.</Text>
+        <Text key="end_of_list">Einde van lijst.</Text>
+        <Text key="add_playlist_title">Nieuwe Lijst</Text>
+        <Text key="playlist_name_label">Lijstnaam:</Text>
+        <Text key="cancel_button">Annuleren</Text>
+        <Text key="create_button">Aanmaken</Text>
+        <Text key="load_files_button">Bestanden Laden</Text>
+        <Text key="load_folder_button">Map Laden</Text>
+        <Text key="remove_song_button">Nummer Verwijderen</Text>
+        <Text key="play_button">▶ Afspelen</Text>
+        <Text key="pause_button">⏸ Pauze</Text>
+        <Text key="stop_button">⏹ Stop</Text>
+        <Text key="rating_label">Beoordeling:</Text>
+        <Text key="device_label">Uitvoer:</Text>
+        <Text key="no_songs_loaded">Geen nummers geladen</Text>
+        <Text key="songs_added">%d nummers toegevoegd.</Text>
+    </Language>
+
+    <!-- Svenska -->
+    <Language name="sv">
+        <Text key="app_title">DJ Steker Music Player V1 - Rent GTK4</Text>
+        <Text key="now_playing">Spelar: </Text>
+        <Text key="paused">Pausad.</Text>
+        <Text key="stopped">Stoppad.</Text>
+        <Text key="playlist_removed">Lista borttagen.</Text>
+        <Text key="song_removed">Låt tagits bort från lista.</Text>
+        <Text key="select_song_first">Välj först en låt.</Text>
+        <Text key="end_of_list">Slutet av listan.</Text>
+        <Text key="add_playlist_title">Ny Lista</Text>
+        <Text key="playlist_name_label">Lista namn:</Text>
+        <Text key="cancel_button">Avbryt</Text>
+        <Text key="create_button">Skapa</Text>
+        <Text key="load_files_button">Ladda Filerna</Text>
+        <Text key="load_folder_button">Ladda Mappen</Text>
+        <Text key="remove_song_button">Ta Bort Låt</Text>
+        <Text key="play_button">▶ Spela</Text>
+        <Text key="pause_button">⏸ Paus</Text>
+        <Text key="stop_button">⏹ Stopp</Text>
+        <Text key="rating_label">Betyg:</Text>
+        <Text key="device_label">Utmatning:</Text>
+        <Text key="no_songs_loaded">Inga låtar laddade</Text>
+        <Text key="songs_added">%d låtar tillagda.</Text>
+    </Language>
+
+    <!-- Polski -->
+    <Language name="pl">
+        <Text key="app_title">DJ Steker Music Player V1 - Czysty GTK4</Text>
+        <Text key="now_playing">Odtwarzanie: </Text>
+        <Text key="paused">Wstrzymano.</Text>
+        <Text key="stopped">Zatrzymano.</Text>
+        <Text key="playlist_removed">Lista usunięta.</Text>
+        <Text key="song_removed">Utwór usunięty z listy.</Text>
+        <Text key="select_song_first">Wybierz najpierw utwór.</Text>
+        <Text key="end_of_list">Koniec listy.</Text>
+        <Text key="add_playlist_title">Nowa Lista</Text>
+        <Text key="playlist_name_label">Nazwa listy:</Text>
+        <Text key="cancel_button">Anuluj</Text>
+        <Text key="create_button">Utwórz</Text>
+        <Text key="load_files_button">Wczytaj Pliki</Text>
+        <Text key="load_folder_button">Wczytaj Folder</Text>
+        <Text key="remove_song_button">Usuń Utwór</Text>
+        <Text key="play_button">▶ Odtwórz</Text>
+        <Text key="pause_button">⏸ Wstrzymaj</Text>
+        <Text key="stop_button">⏹ Stop</Text>
+        <Text key="rating_label">Ocena:</Text>
+        <Text key="device_label">Wyjście:</Text>
+        <Text key="no_songs_loaded">Brak załadowanych utworów</Text>
+        <Text key="songs_added">Dodano %d utworów.</Text>
+    </Language>
+
+    <!-- Türkçe -->
+    <Language name="tr">
+        <Text key="app_title">DJ Steker Music Player V1 - Saf GTK4</Text>
+        <Text key="now_playing">Çalıyor: </Text>
+        <Text key="paused">Duraklatıldı.</Text>
+        <Text key="stopped">Durduruldu.</Text>
+        <Text key="playlist_removed">Liste silindi.</Text>
+        <Text key="song_removed">Şarkı listeden kaldırıldı.</Text>
+        <Text key="select_song_first">Önce bir şarkı seçin.</Text>
+        <Text key="end_of_list">Liste sonu.</Text>
+        <Text key="add_playlist_title">Yeni Liste</Text>
+        <Text key="playlist_name_label">Liste adı:</Text>
+        <Text key="cancel_button">İptal</Text>
+        <Text key="create_button">Oluştur</Text>
+        <Text key="load_files_button">Dosyaları Yükle</Text>
+        <Text key="load_folder_button">Klasörü Yükle</Text>
+        <Text key="remove_song_button">Şarkıyı Kaldır</Text>
+        <Text key="play_button">▶ Çal</Text>
+        <Text key="pause_button">⏸ Duraklat</Text>
+        <Text key="stop_button">⏹ Durdur</Text>
+        <Text key="rating_label">Değerlendirme:</Text>
+        <Text key="device_label">Çıkış:</Text>
+        <Text key="no_songs_loaded">Yüklenen şarkı yok</Text>
+        <Text key="songs_added">%d şarkı eklendi.</Text>
+    </Language>
+
+    <!-- Ελληνικά (Greek) -->
+    <Language name="el">
+        <Text key="app_title">DJ Steker Music Player V1 - Καθαρό GTK4</Text>
+        <Text key="now_playing">Αναπαραγωγή: </Text>
+        <Text key="paused">Παуза.</Text>
+        <Text key="stopped">Σταματημένο.</Text>
+        <Text key="playlist_removed">Λίστα διαγράφηκε.</Text>
+        <Text key="song_removed">Τραγούδι αφαιρέθηκε από τη λίστα.</Text>
+        <Text key="select_song_first">Επιλέξτε πρώτα ένα τραγούδι.</Text>
+        <Text key="end_of_list">Τέλος λίστας.</Text>
+        <Text key="add_playlist_title">Νέα Λίστα</Text>
+        <Text key="playlist_name_label">Όνομα λίστας:</Text>
+        <Text key="cancel_button">Άκυρο</Text>
+        <Text key="create_button">Δημιουργία</Text>
+        <Text key="load_files_button">Φόρτωση Αρχείων</Text>
+        <Text key="load_folder_button">Φόρτωση Φακέλου</Text>
+        <Text key="remove_song_button">Αφαίρεση Τραγουδιού</Text>
+        <Text key="play_button">▶ Αναπαραγωγή</Text>
+        <Text key="pause_button">⏸ Παύση</Text>
+        <Text key="stop_button">⏹ Διακοπή</Text>
+        <Text key="rating_label">Βαθμολογία:</Text>
+        <Text key="device_label">Έξοδος:</Text>
+        <Text key="no_songs_loaded">Κανένα τραγούδι φορτωμένο</Text>
+        <Text key="songs_added">Προστέθηκαν %d τραγούδια.</Text>
+    </Language>
+
+    <!-- العربية (Arabic - RTL) -->
+    <Language name="ar">
+        <Text key="app_title">تشغيل الموسيقى V1 - GTK4 نقي</Text>
+        <Text key="now_playing">يعمل الآن: </Text>
+        <Text key="paused">متوقف مؤقتاً.</Text>
+        <Text key="stopped">متوقف.</Text>
+        <Text key="playlist_removed">تم حذف القائمة.</Text>
+        <Text key="song_removed">تم حذف الأغنية من القائمة.</Text>
+        <Text key="select_song_first">الرجاء اختيار أغنية أولاً.</Text>
+        <Text key="end_of_list">نهاية القائمة.</Text>
+        <Text key="add_playlist_title">قائمة جديدة</Text>
+        <Text key="playlist_name_label">اسم القائمة:</Text>
+        <Text key="cancel_button">إلغاء</Text>
+        <Text key="create_button">إنشاء</Text>
+        <Text key="load_files_button">تحميل الملفات</Text>
+        <Text key="load_folder_button">تحميل المجلد</Text>
+        <Text key="remove_song_button">حذف الأغنية</Text>
+        <Text key="play_button">▶ تشغيل</Text>
+        <Text key="pause_button">⏸ إيقاف مؤقت</Text>
+        <Text key="stop_button">⏹ إيقاف</Text>
+        <Text key="rating_label">التقييم:</Text>
+        <Text key="device_label">الإخراج:</Text>
+        <Text key="no_songs_loaded">لا توجد ملفات موسيقية</Text>
+        <Text key="songs_added">تم إضافة %d أغاني.</Text>
+    </Language>
+
+    <!-- 한국어 (Korean) -->
+    <Language name="ko">
+        <Text key="app_title">DJ Steker Music Player V1 - 순정 GTK4</Text>
+        <Text key="now_playing">재생 중: </Text>
+        <Text key="paused">일시 정지.</Text>
+        <Text key="stopped">중단됨.</Text>
+        <Text key="playlist_removed">목록이 삭제되었습니다.</Text>
+        <Text key="song_removed">노래가 목록에서 제거되었습니다.</Text>
+        <Text key="select_song_first">먼저 노래를 선택하세요.</Text>
+        <Text key="end_of_list">목록 끝.</Text>
+        <Text key="add_playlist_title">새 목록</Text>
+        <Text key="playlist_name_label">목록 이름:</Text>
+        <Text key="cancel_button">취소</Text>
+        <Text key="create_button">생성</Text>
+        <Text key="load_files_button">파일 로드</Text>
+        <Text key="load_folder_button">폴더 로드</Text>
+        <Text key="remove_song_button">노래 제거</Text>
+        <Text key="play_button">▶ 재생</Text>
+        <Text key="pause_button">⏸ 일시정지</Text>
+        <Text key="stop_button">⏹ 중지</Text>
+        <Text key="rating_label">평가:</Text>
+        <Text key="device_label">출력:</Text>
+        <Text key="no_songs_loaded">로드된 노래 없음</Text>
+        <Text key="songs_added">%d 곡이 추가되었습니다.</Text>
+    </Language>
+</Localization>
