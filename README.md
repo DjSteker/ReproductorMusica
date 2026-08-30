@@ -1,26 +1,26 @@
 # ReproductorMusica
 
-Un reproductor de música simple (plantilla).
+Un reproductor de música simple (plantilla) pensado como punto de partida para implementar una aplicación web/desktop/móvil con reproducción local, gestión de listas y soporte de metadatos.
 
 Estado
 
-- Repositorio inicial vacío: actualmente solo contiene la licencia y este README.
-- Objetivo: implementar un reproductor de música (web/desktop/móvil) con gestión de listas de reproducción, reproducción sin pausas, soporte de metadatos y UI sencilla.
+- Repositorio inicial: actualmente solo contiene la licencia y este README.
+- Objetivo: implementar un reproductor de música con gestión de listas de reproducción, reproducción sin pausas, lectura de metadatos y una UI sencilla y accesible.
 
 Características propuestas
 
 - Reproducción local de archivos (MP3, WAV, OGG)
 - Soporte para listas de reproducción (.m3u, .pls)
 - Lectura de metadatos (ID3 tags)
-- Controles básicos: play, pause, stop, siguiente/anterior, seek, volume
-- Normalización de volumen y opción de ecualizador (opcional)
+- Controles básicos: reproducir, pausar, detener, siguiente/anterior, buscar (seek), control de volumen
+- Normalización de volumen y opción de ecualizador (opcional)
 - Interfaz accesible y soporte para atajos de teclado
 - Guardado y carga de listas de reproducción
-- Soporte multiplataforma y empaquetado (si es aplicable)
+- Soporte multiplataforma y empaquetado (si aplica)
 
 Requisitos (ejemplo)
 
-- Node.js >= 18 (si se hace versión web con un build system)
+- Node.js >= 18 (para la versión web/desktop basada en Electron o frameworks similares)
 - npm o yarn
 - Herramientas de compilación para empaquetado nativo (opcional)
 
@@ -36,60 +36,67 @@ Instalación (ejemplo para versión web)
 
    npm run dev
 
-(Este apartado debe actualizarse cuando haya código y scripts reales.)
+(Actualiza estos pasos cuando se añadan scripts reales al proyecto.)
 
 Estructura de proyecto recomendada
 
-- /src - código fuente (frontend o backend)
-  - /assets - imágenes, iconos
-  - /components - componentes UI
-  - /styles - CSS/SCSS
-  - /lib - utilidades (p. ej. lectura de metadatos)
-- /public - archivos estáticos (index.html)
-- /tests - pruebas unitarias y de integración
-- /scripts - scripts de build/deploy
+- src/ - código fuente (frontend o backend)
+  - assets/ - imágenes, iconos
+  - components/ - componentes UI
+  - styles/ - CSS/SCSS
+  - lib/ - utilidades (p. ej. lectura de metadatos, audio manager)
+- public/ - archivos estáticos (index.html)
+- tests/ - pruebas unitarias y de integración
+- scripts/ - scripts de build/deploy
 - README.md - este archivo
 - LICENSE - licencia del proyecto
 
-Buenas prácticas y sugerencias de mejora (para cuando haya código)
+Buenas prácticas y sugerencias (cuando haya código)
 
-- Añadir linting y formateo (ESLint + Prettier) y extras para TypeScript si se usa.
-- Escribir pruebas unitarias y de integración (Jest / Vitest para JS; pytest para Python).
+- Añadir linting y formateo (ESLint + Prettier) y configuración para TypeScript si se usa.
+- Escribir pruebas unitarias y de integración (Jest, Vitest o similares).
 - Añadir GitHub Actions para CI: ejecutar linters y tests en cada PR.
-- Separar la lógica de reproducción del UI (p. ej. un servicio/audio-manager) para facilitar pruebas.
-- Manejar errores y excepciones (archivo corrupto, codecs no soportados) y mostrar mensajes al usuario.
-- Optimizar uso de memoria y objetos de audio (evitar fugas de eventos/handlers).
-- Medir y optimizar el tiempo de carga para grandes listas de reproducción.
+- Separar la lógica de reproducción del UI (p. ej. un servicio/audio-manager) para facilitar pruebas y mantenimiento.
+- Manejar errores y excepciones (archivo corrupto, codecs no soportados) y mostrar mensajes claros al usuario.
+- Evitar fugas de memoria por listeners de audio: limpiar eventos al desmontar componentes.
 - Documentar la API interna y los puntos de extensión (plugins, skins, backends).
-- Soporte para pruebas manuales y automatizadas de accesibilidad (axe-core, Lighthouse).
+- Añadir pruebas de accesibilidad automatizadas (axe-core) y auditorías con Lighthouse.
+
+Sugerencias técnicas concretas
+
+- Arquitectura del audio: crear un servicio `AudioManager` que abstraiga la API `HTMLAudioElement` o la API nativa (WebAudio) y exponga métodos: load(), play(), pause(), stop(), seek(), setVolume(), next(), prev(), setPlaylist(). Esto permite tests unitarios y separación de UI.
+- Metadatos: usar bibliotecas como `music-metadata` (Node) para extracción de tags en backend/desktop y `jsmediatags` en navegador si fuera necesario.
+- Listas de reproducción: persistir en IndexedDB (web) o en archivos JSON en desktop. Soportar import/export .m3u simple.
+- Crossfade / gapless: considerar WebAudio API y buffers para reproducir sin cortes entre pistas.
+- CI/CD: configurar GitHub Actions con jobs para lint, tests y build. Añadir badge en README.
 
 Roadmap sugerido (prioridades)
 
-1. Crear estructura de proyecto y esqueleto de UI.
-2. Implementar reproducción local básica y controles.
-3. Añadir soporte de metadatos y listas de reproducción.
-4. Tests básicos y CI.
-5. Funciones avanzadas: crossfade, ecualizador, normalización, streaming.
+1. Crear estructura de proyecto y esqueleto (index.html + app entry).
+2. Implementar `AudioManager` y reproducir archivos locales usando `HTMLAudioElement`.
+3. Añadir UI básica con controles y lista de reproducción.
+4. Implementar lectura de metadatos y mostrar carátula/título/artista.
+5. Tests básicos y configuración de CI.
+6. Funciones avanzadas: crossfade, ecualizador, normalización, streaming.
 
 Cómo contribuir
 
-- Crear un fork y enviar pull requests con descripciones claras.
-- Abrir issues para reportar bugs o proponer mejoras.
-- Seguir las convenciones de estilo y añadir tests para cambios nuevos.
+- Haz un fork y envía Pull Requests con descripciones claras.
+- Abre issues para reportar bugs o proponer mejoras.
+- Sigue las convenciones de estilo y añade tests para cambios importantes.
 
 Licencia
 
-Este proyecto usa la licencia existente: GNU General Public License v2.0 (ver archivo LICENSE).
+Este proyecto usa GNU General Public License v2.0 (ver archivo LICENSE).
 
 Contacto
 
 - Autor: @DjSteker (GitHub)
 
-Notas finales
+Próximos pasos que puedo hacer por ti
 
-Si quieres, puedo:
+- Crear un esqueleto inicial (index.html, CSS mínimo y un simple reproductor con HTML5 Audio + un `AudioManager` en JS) y hacer push al repositorio.
+- Añadir configuración básica de ESLint + Prettier y un workflow de GitHub Actions para CI.
+- Generar plantillas de issues/PR y archivos CONTRIBUTING.md.
 
-- Proponer una estructura de archivos concreta con ejemplos de componentes.
-- Generar un esqueleto inicial (index.html, un simple reproductor con HTML5 Audio y JS) y pusharlo al repositorio.
-- Añadir plantillas de issues y PR, y configurar GitHub Actions para CI.
-
+Si quieres que implemente alguno de los puntos anteriores, dime cuál y lo crearé en una rama y abriré un PR.
