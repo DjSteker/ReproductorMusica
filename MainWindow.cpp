@@ -136,6 +136,55 @@ static void on_rating_changed(GtkSpinButton *spin, gpointer user_data) {
 	}
 }
 
+//static void on_file_selected(GObject *source, GAsyncResult *result, gpointer user_data) {
+//	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
+//	AppWindow *win = APP_WINDOW(user_data);
+//	GError *error = nullptr;
+//	GListModel *list = gtk_file_dialog_open_multiple_finish(dialog, result, &error);
+//	if (error) {
+//		g_error_free(error);
+//		return;
+//	}
+//	if (!list) {
+//		return;
+//	}
+//
+//	std::vector<std::string> wav_files;
+//	guint count = g_list_model_get_n_items(list);
+//	for (guint i = 0; i < count; i++) {
+//		GFile *file = G_FILE(g_list_model_get_item(list, i));
+//		char *path = g_file_get_path(file);
+//		if (path) {
+//			if (fs::path(path).extension() == ".wav") {
+//				wav_files.push_back(path);
+//			}
+//			g_free(path);
+//		}
+//		g_object_unref(file);
+//	}
+//	g_object_unref(list);
+//
+//	if (!wav_files.empty()) {
+//		int current_playlist = win->playlist_manager->getCurrentPlaylistIndex();
+//		if (current_playlist >= 0) {
+//			win->db->addSongsToPlaylist(current_playlist, wav_files);
+//			win->playlist_manager->refreshSongs(current_playlist);
+//		} else {
+//			win->direct_files.insert(win->direct_files.end(), wav_files.begin(), wav_files.end());
+//			win->playlist_manager->refreshSongs(-1);
+//		}
+//		char msg[100];
+//		snprintf(msg, sizeof(msg), win->localization->getText("songs_added").c_str(), (int) wav_files.size());
+//		gtk_label_set_text(GTK_LABEL(win->lbl_now_playing), msg);
+//	}
+//}
+
+static bool is_supported_audio(const fs::path &p) {
+	std::string ext = p.extension().string();
+	std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+	return ext == ".wav" || ext == ".mp3" || ext == ".ogg";
+}
+
 static void on_file_selected(GObject *source, GAsyncResult *result, gpointer user_data) {
 	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
 	AppWindow *win = APP_WINDOW(user_data);
@@ -149,14 +198,14 @@ static void on_file_selected(GObject *source, GAsyncResult *result, gpointer use
 		return;
 	}
 
-	std::vector<std::string> wav_files;
+	std::vector<std::string> audio_files;
 	guint count = g_list_model_get_n_items(list);
 	for (guint i = 0; i < count; i++) {
 		GFile *file = G_FILE(g_list_model_get_item(list, i));
 		char *path = g_file_get_path(file);
 		if (path) {
-			if (fs::path(path).extension() == ".wav") {
-				wav_files.push_back(path);
+			if (is_supported_audio(fs::path(path))) {
+				audio_files.push_back(path);
 			}
 			g_free(path);
 		}
@@ -164,27 +213,96 @@ static void on_file_selected(GObject *source, GAsyncResult *result, gpointer use
 	}
 	g_object_unref(list);
 
-	if (!wav_files.empty()) {
+	if (!audio_files.empty()) {
 		int current_playlist = win->playlist_manager->getCurrentPlaylistIndex();
 		if (current_playlist >= 0) {
-			win->db->addSongsToPlaylist(current_playlist, wav_files);
+			win->db->addSongsToPlaylist(current_playlist, audio_files);
 			win->playlist_manager->refreshSongs(current_playlist);
 		} else {
-			win->direct_files.insert(win->direct_files.end(), wav_files.begin(), wav_files.end());
-			win->playlist_manager->refreshSongs(-1);
+			win->direct_files.insert(win->direct_files.end(), audio_files.begin(), audio_files.end());
+			win->playlist_manager->refreshSongs(-1, win->direct_files);
 		}
 		char msg[100];
-		snprintf(msg, sizeof(msg), win->localization->getText("songs_added").c_str(), (int) wav_files.size());
+		snprintf(msg, sizeof(msg), win->localization->getText("songs_added").c_str(), (int) audio_files.size());
 		gtk_label_set_text(GTK_LABEL(win->lbl_now_playing), msg);
+	} else {
+		gtk_label_set_text(GTK_LABEL(win->lbl_now_playing), "No se seleccionó ningún archivo de audio compatible (wav/mp3/ogg).");
 	}
 }
+
+//static void on_load_file_clicked(GtkButton *button, gpointer user_data) {
+//	AppWindow *win = APP_WINDOW(user_data);
+//	GtkFileDialog *dialog = gtk_file_dialog_new();
+//	gtk_file_dialog_set_title(dialog, win->localization->getText("load_files_button").c_str());
+//	gtk_file_dialog_open_multiple(dialog, GTK_WINDOW(win), nullptr, on_file_selected, user_data);
+//}
 
 static void on_load_file_clicked(GtkButton *button, gpointer user_data) {
 	AppWindow *win = APP_WINDOW(user_data);
 	GtkFileDialog *dialog = gtk_file_dialog_new();
 	gtk_file_dialog_set_title(dialog, win->localization->getText("load_files_button").c_str());
+
+	// Filtro visible en el propio explorador: solo audio soportado
+	GtkFileFilter *filter = gtk_file_filter_new();
+	gtk_file_filter_set_name(filter, "Audio (wav, mp3, ogg)");
+	gtk_file_filter_add_pattern(filter, "*.wav");
+	gtk_file_filter_add_pattern(filter, "*.mp3");
+	gtk_file_filter_add_pattern(filter, "*.ogg");
+	// También en mayúsculas, por si el sistema de archivos distingue mayúsculas/minúsculas
+	gtk_file_filter_add_pattern(filter, "*.WAV");
+	gtk_file_filter_add_pattern(filter, "*.MP3");
+	gtk_file_filter_add_pattern(filter, "*.OGG");
+
+	GListStore *filters = g_list_store_new(GTK_TYPE_FILE_FILTER);
+	g_list_store_append(filters, filter);
+	gtk_file_dialog_set_filters(dialog, G_LIST_MODEL(filters));
+	g_object_unref(filters);
+	g_object_unref(filter);
+
 	gtk_file_dialog_open_multiple(dialog, GTK_WINDOW(win), nullptr, on_file_selected, user_data);
 }
+
+//static void on_folder_selected(GObject *source, GAsyncResult *result, gpointer user_data) {
+//	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
+//	AppWindow *win = APP_WINDOW(user_data);
+//	GError *error = nullptr;
+//	GFile *file = gtk_file_dialog_select_folder_finish(dialog, result, &error);
+//	if (error) {
+//		g_error_free(error);
+//		return;
+//	}
+//	if (!file) {
+//		return;
+//	}
+//	char *path = g_file_get_path(file);
+//	g_object_unref(file);
+//	if (path) {
+//		std::vector<std::string> wav_files;
+//		try {
+//			for (const auto &entry : fs::recursive_directory_iterator(path)) {
+//				if (entry.is_regular_file() && entry.path().extension() == ".wav") {
+//					wav_files.push_back(entry.path().string());
+//				}
+//			}
+//		} catch (const fs::filesystem_error &e) {
+//			std::cerr << "Error: " << e.what() << std::endl;
+//		}
+//		if (!wav_files.empty()) {
+//			int current_playlist = win->playlist_manager->getCurrentPlaylistIndex();
+//			if (current_playlist >= 0) {
+//				win->db->addSongsToPlaylist(current_playlist, wav_files);
+//				win->playlist_manager->refreshSongs(current_playlist);
+//			} else {
+//				win->direct_files.insert(win->direct_files.end(), wav_files.begin(), wav_files.end());
+//				win->playlist_manager->refreshSongs(-1);
+//			}
+//			char msg[100];
+//			snprintf(msg, sizeof(msg), win->localization->getText("songs_added").c_str(), (int) wav_files.size());
+//			gtk_label_set_text(GTK_LABEL(win->lbl_now_playing), msg);
+//		}
+//		g_free(path);
+//	}
+//}
 
 static void on_folder_selected(GObject *source, GAsyncResult *result, gpointer user_data) {
 	GtkFileDialog *dialog = GTK_FILE_DIALOG(source);
@@ -201,28 +319,30 @@ static void on_folder_selected(GObject *source, GAsyncResult *result, gpointer u
 	char *path = g_file_get_path(file);
 	g_object_unref(file);
 	if (path) {
-		std::vector<std::string> wav_files;
+		std::vector<std::string> audio_files;
 		try {
 			for (const auto &entry : fs::recursive_directory_iterator(path)) {
-				if (entry.is_regular_file() && entry.path().extension() == ".wav") {
-					wav_files.push_back(entry.path().string());
+				if (entry.is_regular_file() && is_supported_audio(entry.path())) {
+					audio_files.push_back(entry.path().string());
 				}
 			}
 		} catch (const fs::filesystem_error &e) {
 			std::cerr << "Error: " << e.what() << std::endl;
 		}
-		if (!wav_files.empty()) {
+		if (!audio_files.empty()) {
 			int current_playlist = win->playlist_manager->getCurrentPlaylistIndex();
 			if (current_playlist >= 0) {
-				win->db->addSongsToPlaylist(current_playlist, wav_files);
+				win->db->addSongsToPlaylist(current_playlist, audio_files);
 				win->playlist_manager->refreshSongs(current_playlist);
 			} else {
-				win->direct_files.insert(win->direct_files.end(), wav_files.begin(), wav_files.end());
-				win->playlist_manager->refreshSongs(-1);
+				win->direct_files.insert(win->direct_files.end(), audio_files.begin(), audio_files.end());
+				win->playlist_manager->refreshSongs(-1, win->direct_files);
 			}
 			char msg[100];
-			snprintf(msg, sizeof(msg), win->localization->getText("songs_added").c_str(), (int) wav_files.size());
+			snprintf(msg, sizeof(msg), win->localization->getText("songs_added").c_str(), (int) audio_files.size());
 			gtk_label_set_text(GTK_LABEL(win->lbl_now_playing), msg);
+		} else {
+			gtk_label_set_text(GTK_LABEL(win->lbl_now_playing), "No se encontraron archivos de audio compatibles (wav/mp3/ogg) en la carpeta.");
 		}
 		g_free(path);
 	}
@@ -453,7 +573,7 @@ static void app_window_class_init(AppWindowClass *klass) {
 #ifdef NDEBUG_STARTUP
 	#define DBG_LOG(msg) do {} while (0)
 #else
-	#define DBG_LOG(msg) do { std::cerr << "[startup] " << msg << std::endl; } while (0)
+#define DBG_LOG(msg) do { std::cerr << "[startup] " << msg << std::endl; } while (0)
 #endif
 
 static void app_window_init(AppWindow *self) {

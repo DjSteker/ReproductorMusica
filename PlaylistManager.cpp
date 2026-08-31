@@ -26,6 +26,7 @@ void PlaylistManager::refreshPlaylists() {
 		gtk_list_box_remove(GTK_LIST_BOX(list_playlists_), child);
 	}
 
+	int count = 0;
 	// db_->getPlaylists() devuelve por valor: aquí es seguro porque el bucle range-for
 	// une una referencia directamente al temporal (extensión de vida garantizada).
 	for (const auto &pl : db_->getPlaylists()) {
@@ -36,21 +37,28 @@ void PlaylistManager::refreshPlaylists() {
 		gtk_widget_set_margin_bottom(label, 5);
 		gtk_label_set_xalign(GTK_LABEL(label), 0.0);
 		gtk_list_box_append(GTK_LIST_BOX(list_playlists_), label);
+		count++;
+	}
+
+	// Reselecciona la fila de la playlist activa: al reconstruir el listbox desde
+	// cero se pierde la selección visual, aunque current_playlist_index_ siga
+	// apuntando a la playlist correcta. setCurrentPlaylist() detecta que el
+	// índice no cambia y no reinicia current_song_index_, así que esto no afecta
+	// a la canción que se esté reproduciendo.
+	if (current_playlist_index_ >= 0 && current_playlist_index_ < count) {
+		GtkListBoxRow *row = gtk_list_box_get_row_at_index(GTK_LIST_BOX(list_playlists_), current_playlist_index_);
+		if (row) {
+			gtk_list_box_select_row(GTK_LIST_BOX(list_playlists_), row);
+		}
 	}
 }
 
-void PlaylistManager::refreshSongs(int current_playlist_index) {
+void PlaylistManager::refreshSongs(int current_playlist_index, const std::vector<std::string> &direct_files) {
 	while (GtkWidget *child = gtk_widget_get_first_child(list_songs_)) {
 		gtk_list_box_remove(GTK_LIST_BOX(list_songs_), child);
 	}
 
 	if (current_playlist_index >= 0) {
-		// FIX: db_->getPlaylists() devuelve un vector<Playlist> temporal. Indexar con
-		// operator[] y tomar una referencia a .songs directamente sobre el resultado
-		// de esa llamada NO extiende la vida del temporal (solo se extiende cuando la
-		// referencia se une directamente al temporal, no a través de una llamada a
-		// función como operator[]). Guardamos la copia en una variable nombrada para
-		// que viva durante todo el bloque.
 		std::vector<Playlist> playlists = db_->getPlaylists();
 		const auto &songs = playlists[current_playlist_index].songs;
 		for (size_t i = 0; i < songs.size(); ++i) {
@@ -62,15 +70,35 @@ void PlaylistManager::refreshSongs(int current_playlist_index) {
 			gtk_widget_set_margin_start(box, 5);
 			gtk_list_box_append(GTK_LIST_BOX(list_songs_), box);
 		}
+		return;
+	}
+
+	// Modo "sin playlist": muestra los archivos sueltos recibidos
+	for (const auto &path : direct_files) {
+		std::string filename = fs::path(path).filename().string();
+		GtkWidget *box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 5);
+		GtkWidget *label = gtk_label_new(filename.c_str());
+		gtk_widget_set_hexpand(label, TRUE);
+		gtk_label_set_xalign(GTK_LABEL(label), 0.0);
+		gtk_box_append(GTK_BOX(box), label);
+		gtk_widget_set_margin_start(box, 5);
+		gtk_list_box_append(GTK_LIST_BOX(list_songs_), box);
 	}
 }
 
 void PlaylistManager::setCurrentPlaylist(int index) {
+	// Solo se reinicia la canción activa si realmente se cambia de playlist.
+	// Esto evita perder el "ahora reproduciendo" cuando refreshPlaylists()
+	// reselecciona la misma fila tras reconstruir el listbox.
+	bool changed = (index != current_playlist_index_);
 	current_playlist_index_ = index;
+
 	if (index >= 0) {
 		gtk_spin_button_set_value(GTK_SPIN_BUTTON(spin_rating_), db_->getPlaylists()[index].rating);
 	}
-	current_song_index_ = -1;
+	if (changed) {
+		current_song_index_ = -1;
+	}
 	refreshSongs(index);
 }
 
@@ -91,7 +119,7 @@ void PlaylistManager::addPlaylist(const std::string &name) {
 	refreshPlaylists();
 }
 
-void PlaylistManager::removePlaylist(int index) {
+void PlaylistManager::removePlaylist(int index, const std::vector<std::string> &direct_files) {
 	if (index < 0) {
 		return;
 	}
@@ -99,21 +127,19 @@ void PlaylistManager::removePlaylist(int index) {
 	current_playlist_index_ = -1;
 	current_song_index_ = -1;
 	refreshPlaylists();
-	refreshSongs(-1);
+	refreshSongs(-1, direct_files);
 	gtk_label_set_text(GTK_LABEL(lbl_now_playing_), "Lista eliminada.");
 }
 
 void PlaylistManager::removeSong(int playlist_index, int song_index) {
-	if (song_index < 0) {
+	if (song_index < 0 || playlist_index < 0) {
 		gtk_label_set_text(GTK_LABEL(lbl_now_playing_), "Selecciona una canción primero.");
 		return;
 	}
-	if (playlist_index >= 0) {
-		db_->removeSong(playlist_index, song_index);
-		refreshSongs(playlist_index);
-	}
+	bool ok = db_->removeSong(playlist_index, song_index);
+	refreshSongs(playlist_index);
 	current_song_index_ = -1;
-	gtk_label_set_text(GTK_LABEL(lbl_now_playing_), "Canción eliminada de la lista.");
+	gtk_label_set_text(GTK_LABEL(lbl_now_playing_), ok ? "Canción eliminada de la lista." : "No se pudo eliminar la canción.");
 }
 
 void PlaylistManager::setPlaylistRating(int playlist_index, int rating) {
@@ -125,13 +151,11 @@ void PlaylistManager::setPlaylistRating(int playlist_index, int rating) {
 
 void PlaylistManager::playSong(int song_index, DatabaseManager *db, std::unique_ptr<AudioEngine> &audio_engine, int current_playlist_index, std::vector<std::string> &direct_files) {
 	if (current_playlist_index >= 0) {
-		// FIX: misma corrección que en refreshSongs — copia nombrada para evitar
-		// la referencia colgante sobre el temporal devuelto por getPlaylists().
 		std::vector<Playlist> playlists = db->getPlaylists();
 		const auto &songs = playlists[current_playlist_index].songs;
 		if (song_index >= 0 && song_index < (int) songs.size()) {
 			current_song_index_ = song_index;
-			if (audio_engine->loadWav(songs[song_index].filepath)) {
+			if (audio_engine->loadFile(songs[song_index].filepath)) {
 				std::string text = "Reproduciendo: " + songs[song_index].filename;
 				gtk_label_set_text(GTK_LABEL(lbl_now_playing_), text.c_str());
 				audio_engine->play();
@@ -145,7 +169,7 @@ void PlaylistManager::playSong(int song_index, DatabaseManager *db, std::unique_
 	}
 	if (!direct_files.empty() && song_index >= 0 && song_index < (int) direct_files.size()) {
 		current_song_index_ = song_index;
-		if (audio_engine->loadWav(direct_files[song_index])) {
+		if (audio_engine->loadFile(direct_files[song_index])) {
 			std::string filename = fs::path(direct_files[song_index]).filename().string();
 			std::string text = "Reproduciendo: " + filename;
 			gtk_label_set_text(GTK_LABEL(lbl_now_playing_), text.c_str());

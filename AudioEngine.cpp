@@ -6,26 +6,30 @@
  */
 
 #include "AudioEngine.hpp"
+#include "WavDecoder.hpp"
+#include "Mp3Decoder.hpp"
+#include "OggDecoder.hpp"
 #include <iostream>
 #include <cstring>
 #include <unistd.h>
 #include <algorithm>
+#include <filesystem>
+
+namespace fs = std::filesystem;
 
 AudioEngine::AudioEngine() {
 	handle_ = nullptr;
 	playing_ = false;
 	paused_ = false;
 	stop_requested_ = false;
-	data_offset_ = 0;
-	data_size_ = 0;
-	bytes_read_ = 0;
 	sample_rate_ = 44100;
 	channels_ = 2;
-	format_ = SND_PCM_FORMAT_S16_LE;
 	volume_ = 1.0f;
 	streaming_mode_ = false;
 	progress_callback_ = nullptr;
 	progress_user_data_ = nullptr;
+	data_size_ = 0;
+	bytes_read_ = 0;
 	on_finished_callback = []() {
 	};
 }
@@ -37,11 +41,6 @@ AudioEngine::~AudioEngine() {
 
 bool AudioEngine::init(const std::string &device) {
 	std::lock_guard<std::mutex> lock(audio_mutex_);
-	// FIX: antes se llamaba aquí a close(), que vuelve a bloquear audio_mutex_
-	// (un std::mutex no reentrante) desde el mismo hilo que ya lo tiene
-	// bloqueado dos líneas más arriba -> autodeadlock permanente. init() se
-	// quedaba colgado para siempre sin error ni mensaje. closeLocked() hace lo
-	// mismo pero asumiendo que el mutex ya está bloqueado por el llamante.
 	closeLocked();
 
 	int err = snd_pcm_open(&handle_, device.c_str(), SND_PCM_STREAM_PLAYBACK, 0);
@@ -55,7 +54,7 @@ bool AudioEngine::init(const std::string &device) {
 	snd_pcm_hw_params_alloca(&params);
 	snd_pcm_hw_params_any(handle_, params);
 	snd_pcm_hw_params_set_access(handle_, params, SND_PCM_ACCESS_RW_INTERLEAVED);
-	snd_pcm_hw_params_set_format(handle_, params, format_);
+	snd_pcm_hw_params_set_format(handle_, params, SND_PCM_FORMAT_S16_LE);
 	snd_pcm_hw_params_set_rate_near(handle_, params, (unsigned int*) &sample_rate_, 0);
 	snd_pcm_hw_params_set_channels(handle_, params, channels_);
 
@@ -86,63 +85,45 @@ void AudioEngine::closeLocked() {
 	}
 }
 
-bool AudioEngine::parseWavHeader(std::ifstream &file, size_t &data_offset, size_t &data_size) {
-	char header[44];
-	if (!file.read(header, 44)) {
-		return false;
-	}
-	if (std::memcmp(header, "RIFF", 4) != 0 || std::memcmp(header + 8, "WAVE", 4) != 0) {
-		return false;
-	}
-
-	// FIX: leer los campos con memcpy en vez de reinterpret_cast directo sobre el
-	// buffer de char. reinterpret_cast a uint16_t*/uint32_t* sobre un char[] puede
-	// violar la regla de aliasing estricto y, en plataformas que no toleran acceso
-	// desalineado (o con ciertas optimizaciones del compilador), producir lecturas
-	// incorrectas o un crash. memcpy es siempre válido y el compilador lo optimiza
-	// igual de bien.
-	uint16_t audio_format = 0;
-	uint16_t channels = 0;
-	uint32_t sample_rate = 0;
-	uint32_t data_size32 = 0;
-
-	std::memcpy(&audio_format, header + 20, sizeof(audio_format));
-	std::memcpy(&channels, header + 22, sizeof(channels));
-	std::memcpy(&sample_rate, header + 24, sizeof(sample_rate));
-	std::memcpy(&data_size32, header + 40, sizeof(data_size32));
-
-	channels_ = channels;
-	sample_rate_ = static_cast<int>(sample_rate);
-
-	if (audio_format != 1) {
-		return false;
-	}
-
-	data_size = data_size32;
-	data_offset = 44;
-	return true;
-}
-
-bool AudioEngine::loadWav(const std::string &filepath) {
+bool AudioEngine::loadFile(const std::string &filepath) {
 	stop();
 	std::lock_guard<std::mutex> lock(audio_mutex_);
 
-	wav_file_.close();
-	wav_file_.clear();
-	wav_file_.open(filepath, std::ios::binary);
+	streaming_mode_ = false;
 
-	if (!wav_file_.is_open()) {
+	std::string ext = fs::path(filepath).extension().string();
+	std::transform(ext.begin(), ext.end(), ext.begin(), ::tolower);
+
+	std::unique_ptr<IAudioDecoder> new_decoder;
+	if (ext == ".wav") {
+		new_decoder = std::make_unique<WavDecoder>();
+	} else if (ext == ".mp3") {
+		new_decoder = std::make_unique<Mp3Decoder>();
+	} else if (ext == ".ogg") {
+		new_decoder = std::make_unique<OggDecoder>();
+	} else {
+		std::cerr << "Formato de audio no soportado: " << ext << std::endl;
 		return false;
 	}
 
-	if (!parseWavHeader(wav_file_, data_offset_, data_size_)) {
-		wav_file_.close();
+	if (!new_decoder->open(filepath)) {
+		std::cerr << "Error al abrir archivo de audio: " << filepath << std::endl;
 		return false;
 	}
 
-	wav_file_.seekg(data_offset_);
+	decoder_ = std::move(new_decoder);
+	channels_ = decoder_->channels();
+	sample_rate_ = decoder_->sampleRate();
 	bytes_read_ = 0;
-	streaming_mode_ = true;
+
+	// El tamaño del archivo en disco es una aproximación razonable para el
+	// progreso en formatos comprimidos (no es el tamaño exacto de PCM
+	// decodificado, pero basta para una barra de progreso orientativa).
+	std::error_code ec;
+	data_size_ = fs::file_size(filepath, ec);
+	if (ec) {
+		data_size_ = 0;
+	}
 
 	if (handle_) {
 		snd_pcm_hw_params_t *params;
@@ -153,38 +134,40 @@ bool AudioEngine::loadWav(const std::string &filepath) {
 		snd_pcm_hw_params(handle_, params);
 		snd_pcm_prepare(handle_);
 	}
+
+	streaming_mode_ = true;
 	return true;
 }
 
 bool AudioEngine::fillBuffer(char *buffer, size_t buffer_size) {
-	if (!streaming_mode_ || !wav_file_.is_open()) {
+	if (!streaming_mode_ || !decoder_) {
 		return false;
 	}
 
-	size_t remaining = data_size_ - bytes_read_;
-	size_t to_read = std::min(buffer_size, remaining);
-
-	if (to_read == 0) {
+	size_t read = decoder_->readPcm(buffer, buffer_size);
+	if (read == 0) {
 		return false;
 	}
 
-	if (!wav_file_.read(buffer, to_read)) {
-		return false;
-	}
-
-	bytes_read_ += to_read;
+	bytes_read_ += read;
 
 	if (volume_ < 0.99f || volume_ > 1.01f) {
 		int16_t *samples = reinterpret_cast<int16_t*>(buffer);
-		size_t num_samples = to_read / sizeof(int16_t);
+		size_t num_samples = read / sizeof(int16_t);
 		for (size_t i = 0; i < num_samples; ++i) {
 			samples[i] = static_cast<int16_t>(samples[i] * volume_);
 		}
 	}
 
 	if (progress_callback_ && data_size_ > 0) {
-		double progress = static_cast<double>(bytes_read_) / data_size_;
-		progress_callback_(progress, progress_user_data_);
+		double progress = static_cast<double>(bytes_read_) / static_cast<double>(data_size_);
+		progress_callback_(std::min(progress, 1.0), progress_user_data_);
+	}
+
+	// El buffer se pudo rellenar parcialmente (read < buffer_size); ALSA
+	// solo recibe lo realmente decodificado, vía frames en playbackLoop().
+	if (read < buffer_size) {
+		std::memset(buffer + read, 0, buffer_size - read);
 	}
 
 	return true;
